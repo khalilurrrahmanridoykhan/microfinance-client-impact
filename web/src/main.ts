@@ -1,18 +1,20 @@
 import "./styles.css";
 
 type ReportBundle = {
-  outcomes: { overall: { n: number; median_income_change: number; median_savings_change: number } };
-  financialHealth: { overall: { support_review_flag_rate: number; multiple_borrowing_rate: number } };
-  clientVoice: { satisfaction_response_n: number; mean_satisfaction_score: number; complaint_rate_per_1000: number };
-  inclusion: { overall: { n: number; suppressed: boolean; mean_loan_control_score?: number } };
-  uncertainty: { median_change_intervals: { income: { lower: number; upper: number } } };
-  evaluation: { readiness: { causal_ready: boolean; reasons: string[] } };
+    outcomes: { overall: { n: number; median_income_change: number; median_savings_change: number } };
+    financialHealth: { overall: { support_review_flag_rate: number; multiple_borrowing_rate: number } };
+    clientVoice: { satisfaction_response_n: number; mean_satisfaction_score: number; complaint_rate_per_1000: number };
+    inclusion: { overall: { n: number; suppressed: boolean; mean_loan_control_score?: number } };
+    uncertainty: { median_change_intervals: { income: { lower: number; upper: number } } };
+    evaluation: { readiness: { causal_ready: boolean; reasons: string[] } };
 };
+
+type DashboardView = "Overview" | "Financial health" | "Inclusion & voice" | "Methods";
 
 const root = document.querySelector<HTMLDivElement>("#root");
 
 if (!root) {
-  throw new Error("Dashboard root element was not found.");
+    throw new Error("Dashboard root element was not found.");
 }
 
 root.innerHTML = `
@@ -25,10 +27,10 @@ root.innerHTML = `
       <span class="data-badge">SYNTHETIC DATA</span>
     </header>
     <nav class="tabs" aria-label="Dashboard sections">
-      <button class="tab is-active" type="button" aria-current="page">Overview</button>
-      <button class="tab" type="button">Financial health</button>
-      <button class="tab" type="button">Inclusion & voice</button>
-      <button class="tab" type="button">Methods</button>
+      <button class="tab is-active" data-view="Overview" type="button" aria-current="page">Overview</button>
+      <button class="tab" data-view="Financial health" type="button">Financial health</button>
+      <button class="tab" data-view="Inclusion & voice" type="button">Inclusion & voice</button>
+      <button class="tab" data-view="Methods" type="button">Methods</button>
     </nav>
     <section class="notice" aria-label="Data notice">
       <strong>Illustrative analysis</strong>
@@ -55,51 +57,68 @@ root.innerHTML = `
 const metrics = root.querySelector<HTMLDivElement>("#metrics");
 
 async function loadReports(): Promise<ReportBundle> {
-  const [outcomes, financialHealth, clientVoice, inclusion, uncertainty, evaluation] = await Promise.all([
-    fetch("./data/outcomes.json").then((response) => response.json()),
-    fetch("./data/financial-health.json").then((response) => response.json()),
-    fetch("./data/client-voice.json").then((response) => response.json()),
-    fetch("./data/inclusion.json").then((response) => response.json()),
-    fetch("./data/uncertainty.json").then((response) => response.json()),
-    fetch("./data/evaluation.json").then((response) => response.json()),
-  ]);
-  return { outcomes, financialHealth, clientVoice, inclusion, uncertainty, evaluation };
+    const [outcomes, financialHealth, clientVoice, inclusion, uncertainty, evaluation] = await Promise.all([
+        fetch("./data/outcomes.json").then((response) => response.json()),
+        fetch("./data/financial-health.json").then((response) => response.json()),
+        fetch("./data/client-voice.json").then((response) => response.json()),
+        fetch("./data/inclusion.json").then((response) => response.json()),
+        fetch("./data/uncertainty.json").then((response) => response.json()),
+        fetch("./data/evaluation.json").then((response) => response.json()),
+    ]);
+    return { outcomes, financialHealth, clientVoice, inclusion, uncertainty, evaluation };
 }
 
-function renderView(view: string, reports: ReportBundle): void {
-  const panel = document.querySelector<HTMLElement>("#view-panel");
-  if (!panel) return;
-  const views: Record<string, string> = {
-    Overview: `<p class="eyebrow">Overview</p><h3>Reported change, held beside financial stress</h3><p>Median household income change: <strong>${reports.outcomes.overall.median_income_change}</strong>. Median savings change: <strong>${reports.outcomes.overall.median_savings_change}</strong>.</p>`,
-    "Financial health": `<p class="eyebrow">Financial health</p><h3>Support signals need human context</h3><p><strong>${Math.round(reports.financialHealth.overall.support_review_flag_rate * 100)}%</strong> of synthetic clients meet at least one configured support signal. Multiple borrowing appears for <strong>${Math.round(reports.financialHealth.overall.multiple_borrowing_rate * 100)}%</strong>.</p>`,
-    "Inclusion & voice": `<p class="eyebrow">Inclusion & voice</p><h3>Agency and experience are reported together</h3><p>Satisfaction mean: <strong>${reports.clientVoice.mean_satisfaction_score}</strong>/5. Complaints: <strong>${reports.clientVoice.complaint_rate_per_1000}</strong> per 1,000 active synthetic clients.</p>`,
-    Methods: `<p class="eyebrow">Methods</p><h3>What this dashboard can and cannot say</h3><p>Income-change interval: <strong>${reports.uncertainty.median_change_intervals.income.lower}</strong> to <strong>${reports.uncertainty.median_change_intervals.income.upper}</strong>. Causal-ready: <strong>${reports.evaluation.readiness.causal_ready ? "yes" : "no"}</strong>.</p><p class="muted">This release has no comparison group. Results are synthetic, descriptive and not credit decisions.</p>`,
-  };
-  panel.innerHTML = views[view] ?? views.Overview;
+function renderView(view: DashboardView, reports?: ReportBundle): void {
+    const panel = document.querySelector<HTMLElement>("#view-panel");
+    if (!panel) return;
+  const views: Record<DashboardView, string> = {
+    Overview: reports
+      ? `<p class="eyebrow">Overview</p><h3>Reported change, held beside financial stress</h3><p>Median household income change: <strong>${reports.outcomes.overall.median_income_change}</strong>. Median savings change: <strong>${reports.outcomes.overall.median_savings_change}</strong>.</p>`
+      : `<p class="eyebrow">Overview</p><h3>Aggregate reports are loading</h3><p class="muted">The dashboard is ready. Its synthetic report bundle will appear here when available.</p>`,
+    "Financial health": reports
+      ? `<p class="eyebrow">Financial health</p><h3>Support signals need human context</h3><p><strong>${Math.round(reports.financialHealth.overall.support_review_flag_rate * 100)}%</strong> of synthetic clients meet at least one configured support signal. Multiple borrowing appears for <strong>${Math.round(reports.financialHealth.overall.multiple_borrowing_rate * 100)}%</strong>.</p>`
+      : `<p class="eyebrow">Financial health</p><h3>Financial-health report unavailable</h3><p class="muted">Run <code>make webdata</code> to provide the aggregate report.</p>`,
+    "Inclusion & voice": reports
+      ? `<p class="eyebrow">Inclusion & voice</p><h3>Agency and experience are reported together</h3><p>Satisfaction mean: <strong>${reports.clientVoice.mean_satisfaction_score}</strong>/5. Complaints: <strong>${reports.clientVoice.complaint_rate_per_1000}</strong> per 1,000 active synthetic clients.</p>`
+      : `<p class="eyebrow">Inclusion & voice</p><h3>Client-voice report unavailable</h3><p class="muted">Run <code>make webdata</code> to provide the aggregate report.</p>`,
+    Methods: reports
+      ? `<p class="eyebrow">Methods</p><h3>What this dashboard can and cannot say</h3><p>Income-change interval: <strong>${reports.uncertainty.median_change_intervals.income.lower}</strong> to <strong>${reports.uncertainty.median_change_intervals.income.upper}</strong>. Causal-ready: <strong>${reports.evaluation.readiness.causal_ready ? "yes" : "no"}</strong>.</p><p class="muted">This release has no comparison group. Results are synthetic, descriptive and not credit decisions.</p>`
+      : `<p class="eyebrow">Methods</p><h3>Methods and limits</h3><p class="muted">This dashboard uses synthetic, aggregate data only. Run <code>make webdata</code> to load the current report metadata.</p>`,
+    };
+  panel.innerHTML = views[view];
 }
 
-loadReports()
-  .then((reports) => {
-    if (!metrics) return;
-    metrics.innerHTML = `
-      <article class="metric-card"><span class="metric-label">Paired clients</span><strong>${reports.outcomes.overall.n}</strong><small>Baseline and follow-up observations</small></article>
-      <article class="metric-card"><span class="metric-label">Support-review signals</span><strong>${Math.round(reports.financialHealth.overall.support_review_flag_rate * 100)}%</strong><small>Human-review signals, not decisions</small></article>
-      <article class="metric-card"><span class="metric-label">Satisfaction responses</span><strong>${reports.clientVoice.satisfaction_response_n}</strong><small>Follow-up synthetic responses</small></article>
-    `;
-    renderView("Overview", reports);
-    for (const tab of root.querySelectorAll<HTMLButtonElement>(".tab")) {
-      tab.addEventListener("click", () => renderView(tab.textContent ?? "Overview", reports));
-    }
-  })
-  .catch(() => {
-    if (metrics) metrics.innerHTML = `<p class="load-error" role="alert">Aggregate reports could not be loaded. Run <code>make webdata</code> and reload.</p>`;
-  });
+let loadedReports: ReportBundle | undefined;
 
 for (const tab of root.querySelectorAll<HTMLButtonElement>(".tab")) {
   tab.addEventListener("click", () => {
     for (const item of root.querySelectorAll<HTMLButtonElement>(".tab")) {
-      item.classList.toggle("is-active", item === tab);
-      item.toggleAttribute("aria-current", item === tab);
+      const isActive = item === tab;
+      item.classList.toggle("is-active", isActive);
+      item.toggleAttribute("aria-current", isActive);
     }
+    renderView(tab.dataset.view as DashboardView, loadedReports);
+    document.querySelector<HTMLElement>("#view-panel")?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   });
 }
+
+renderView("Overview");
+
+loadReports()
+    .then((reports) => {
+        if (!metrics) return;
+        metrics.innerHTML = `
+      <article class="metric-card"><span class="metric-label">Paired clients</span><strong>${reports.outcomes.overall.n}</strong><small>Baseline and follow-up observations</small></article>
+      <article class="metric-card"><span class="metric-label">Support-review signals</span><strong>${Math.round(reports.financialHealth.overall.support_review_flag_rate * 100)}%</strong><small>Human-review signals, not decisions</small></article>
+      <article class="metric-card"><span class="metric-label">Satisfaction responses</span><strong>${reports.clientVoice.satisfaction_response_n}</strong><small>Follow-up synthetic responses</small></article>
+    `;
+        loadedReports = reports;
+        renderView("Overview", reports);
+    })
+    .catch(() => {
+        if (metrics) metrics.innerHTML = `<p class="load-error" role="alert">Aggregate reports could not be loaded. Run <code>make webdata</code> and reload.</p>`;
+        renderView("Overview");
+    });
