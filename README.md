@@ -23,8 +23,9 @@ The dashboard and analysis are for program learning and safeguards. They must no
 
 ## Status
 
-CI0 foundation and CI1 indicator/source specification are complete. CI2 synthetic client-impact
-dataset generation is now available. Next: add broader data-quality validation and reporting.
+CI0 foundation, CI1 indicator/source specification, CI2 synthetic client-impact dataset
+generation and CI3 data-quality reporting are complete. CI4 descriptive outcome analytics
+and aggregate report export are now available. Next: add uncertainty and attrition analysis.
 
 ## Quick start
 
@@ -36,6 +37,7 @@ make test
 make lint
 make synth  # write the seeded synthetic tables to data/synthetic/
 make quality  # write results/generated/data-quality.json
+make outcomes  # write results/generated/outcomes.json
 ```
 
 ## Repository standards
