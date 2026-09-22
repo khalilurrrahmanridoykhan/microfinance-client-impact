@@ -237,7 +237,7 @@ def write_dataset(tables: dict[str, list[dict[str, Any]]], output_dir: Path) -> 
     for table_name, rows in tables.items():
         if not rows:
             continue
-        fields = list(rows[0])
+        fields = list(dict.fromkeys(field for row in rows for field in row))
         with (output_dir / f"{table_name}.csv").open("w", newline="", encoding="utf-8") as handle:
             writer = csv.DictWriter(handle, fieldnames=fields)
             writer.writeheader()
