@@ -10,7 +10,13 @@ from .financial_health import (
 	write_financial_health_report,
 )
 from .generate import SyntheticConfig, generate_dataset, validate_dataset, write_dataset
-from .inclusion import inclusion_by_district, inclusion_rows, inclusion_summary
+from .inclusion import (
+	inclusion_by_district,
+	inclusion_report,
+	inclusion_rows,
+	inclusion_summary,
+	write_inclusion_report,
+)
 from .indicators import debt_service_ratio, income_change
 from .outcomes import (
 	client_outcomes,
@@ -35,6 +41,7 @@ __all__ = [
 	"generate_dataset",
 	"income_change",
 	"inclusion_by_district",
+	"inclusion_report",
 	"inclusion_rows",
 	"inclusion_summary",
 	"client_outcomes",
@@ -51,6 +58,7 @@ __all__ = [
 	"subgroup_summary",
 	"support_review_flags",
 	"write_financial_health_report",
+	"write_inclusion_report",
 	"write_client_voice_report",
 	"write_outcome_report",
 	"write_quality_report",

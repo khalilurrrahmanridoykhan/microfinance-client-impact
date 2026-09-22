@@ -1,5 +1,11 @@
 from client_impact.generate import SyntheticConfig, generate_dataset
-from client_impact.inclusion import inclusion_by_district, inclusion_rows, inclusion_summary
+from client_impact.inclusion import (
+    inclusion_by_district,
+    inclusion_report,
+    inclusion_rows,
+    inclusion_summary,
+    write_inclusion_report,
+)
 
 
 def test_inclusion_rows_preserve_gender_and_agency_scores():
@@ -42,3 +48,14 @@ def test_inclusion_by_district_returns_suppressed_groups():
     summary = inclusion_by_district(rows, minimum_group_size=2)
 
     assert summary["Dhaka"]["suppressed"] is True
+
+
+def test_inclusion_report_is_aggregate_only(tmp_path):
+    report = inclusion_report(generate_dataset(SyntheticConfig(seed=7, clients=4)))
+    output_path = tmp_path / "inclusion.json"
+
+    write_inclusion_report(report, output_path)
+
+    assert report["data_layer"] == "synthetic"
+    assert "client_id" not in report
+    assert '"data_layer": "synthetic"' in output_path.read_text(encoding="utf-8")

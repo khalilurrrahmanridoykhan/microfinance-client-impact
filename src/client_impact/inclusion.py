@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from statistics import mean
 from typing import Any
 
@@ -52,3 +54,23 @@ def inclusion_by_district(
         district: inclusion_summary(group, minimum_group_size=minimum_group_size)
         for district, group in sorted(groups.items())
     }
+
+
+def inclusion_report(
+    tables: dict[str, list[dict[str, Any]]], *, minimum_group_size: int = 5
+) -> dict[str, Any]:
+    """Build aggregate inclusion results without exposing client-level rows."""
+    rows = inclusion_rows(tables)
+    return {
+        "data_layer": "synthetic",
+        "interpretation": "reported agency differences; not automatically causal",
+        "minimum_group_size": minimum_group_size,
+        "overall": inclusion_summary(rows, minimum_group_size=minimum_group_size),
+        "by_district": inclusion_by_district(rows, minimum_group_size=minimum_group_size),
+    }
+
+
+def write_inclusion_report(report: dict[str, Any], output_path: Path) -> None:
+    """Write aggregate inclusion results as stable JSON."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
