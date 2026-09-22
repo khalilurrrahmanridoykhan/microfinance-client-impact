@@ -2,7 +2,13 @@
 
 from .generate import SyntheticConfig, generate_dataset, validate_dataset, write_dataset
 from .indicators import debt_service_ratio, income_change
-from .outcomes import client_outcomes, outcome_summary, subgroup_summary
+from .outcomes import (
+	client_outcomes,
+	outcome_report,
+	outcome_summary,
+	subgroup_summary,
+	write_outcome_report,
+)
 from .quality import quality_report, write_quality_report
 
 __all__ = [
@@ -12,8 +18,10 @@ __all__ = [
 	"income_change",
 	"client_outcomes",
 	"outcome_summary",
+	"outcome_report",
 	"quality_report",
 	"subgroup_summary",
+	"write_outcome_report",
 	"write_quality_report",
 	"validate_dataset",
 	"write_dataset",

@@ -1,5 +1,11 @@
 from client_impact.generate import SyntheticConfig, generate_dataset
-from client_impact.outcomes import client_outcomes, outcome_summary, subgroup_summary
+from client_impact.outcomes import (
+    client_outcomes,
+    outcome_report,
+    outcome_summary,
+    subgroup_summary,
+    write_outcome_report,
+)
 
 
 def test_client_outcomes_calculates_paired_changes():
@@ -61,3 +67,21 @@ def test_subgroup_summary_groups_by_gender():
 
     assert set(summary) == {"man", "woman"}
     assert summary["woman"]["median_income_change"] == 100
+
+
+def test_outcome_report_is_aggregate_only():
+    report = outcome_report(generate_dataset(SyntheticConfig(seed=7, clients=4)))
+
+    assert report["data_layer"] == "synthetic"
+    assert report["overall"]["n"] == 4
+    assert "client_id" not in report
+    assert set(report) == {"data_layer", "interpretation", "overall", "by_gender", "by_district"}
+
+
+def test_outcome_report_can_be_written_as_json(tmp_path):
+    report = outcome_report(generate_dataset(SyntheticConfig(seed=7, clients=2)))
+    output_path = tmp_path / "outcomes.json"
+
+    write_outcome_report(report, output_path)
+
+    assert '"data_layer": "synthetic"' in output_path.read_text(encoding="utf-8")

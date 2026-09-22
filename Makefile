@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-.PHONY: setup test lint synth quality check
+.PHONY: setup test lint synth quality outcomes check
 
 setup:
 	$(PYTHON) -m pip install -e '.[dev]'
@@ -16,5 +16,8 @@ synth:
 
 quality:
 	PYTHONPATH=src $(PYTHON) -c 'from pathlib import Path; from client_impact import generate_dataset, quality_report, write_quality_report; write_quality_report(quality_report(generate_dataset()), Path("results/generated/data-quality.json"))'
+
+outcomes:
+	PYTHONPATH=src $(PYTHON) -c 'from pathlib import Path; from client_impact import generate_dataset, outcome_report, write_outcome_report; write_outcome_report(outcome_report(generate_dataset()), Path("results/generated/outcomes.json"))'
 
 check: lint test

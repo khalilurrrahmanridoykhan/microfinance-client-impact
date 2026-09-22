@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from statistics import median
 from typing import Any
 
@@ -77,6 +79,24 @@ def subgroup_summary(outcomes: list[dict[str, Any]], field: str) -> dict[str, di
         if value is not None:
             groups.setdefault(str(value), []).append(row)
     return {value: outcome_summary(rows) for value, rows in sorted(groups.items())}
+
+
+def outcome_report(tables: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    """Build aggregate outcome outputs without exposing client-level records."""
+    outcomes = client_outcomes(tables)
+    return {
+        "data_layer": "synthetic",
+        "interpretation": "descriptive paired change; not automatically causal",
+        "overall": outcome_summary(outcomes),
+        "by_gender": subgroup_summary(outcomes, "gender"),
+        "by_district": subgroup_summary(outcomes, "district"),
+    }
+
+
+def write_outcome_report(report: dict[str, Any], output_path: Path) -> None:
+    """Write aggregate outcome results as stable, human-readable JSON."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def _rounds_by_client(rows: list[dict[str, Any]]) -> dict[str, dict[str, dict[str, Any]]]:
