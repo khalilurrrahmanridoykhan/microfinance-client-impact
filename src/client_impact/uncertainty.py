@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import json
 import random
+from pathlib import Path
 from statistics import median
 from typing import Any, Sequence
+
+from .outcomes import client_outcomes
 
 
 def bootstrap_median_interval(
@@ -61,6 +65,33 @@ def followup_coverage(
         "followup_rate": round(followup_count / baseline_count, 4) if baseline_count else None,
         "paired_rate": round(paired_count / baseline_count, 4) if baseline_count else None,
     }
+
+
+def uncertainty_report(tables: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    """Build aggregate bootstrap intervals and survey coverage metrics."""
+    outcomes = client_outcomes(tables)
+    return {
+        "data_layer": "synthetic",
+        "interpretation": "bootstrap intervals describe synthetic paired changes; not causal evidence",
+        "median_change_intervals": {
+            "income": bootstrap_median_interval([row["income_change"] for row in outcomes]),
+            "business_profit": bootstrap_median_interval(
+                [row["business_profit_change"] for row in outcomes]
+            ),
+            "savings": bootstrap_median_interval([row["savings_change"] for row in outcomes]),
+        },
+        "coverage": {
+            "wellbeing_surveys": followup_coverage(tables, "wellbeing_surveys"),
+            "outcome_surveys": followup_coverage(tables, "outcome_surveys"),
+            "savings": followup_coverage(tables, "savings"),
+        },
+    }
+
+
+def write_uncertainty_report(report: dict[str, Any], output_path: Path) -> None:
+    """Write aggregate uncertainty results as stable, human-readable JSON."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def _percentile(values: Sequence[float], probability: float) -> float:

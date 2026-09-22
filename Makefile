@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-.PHONY: setup test lint synth quality outcomes check
+.PHONY: setup test lint synth quality outcomes uncertainty check
 
 setup:
 	$(PYTHON) -m pip install -e '.[dev]'
@@ -19,5 +19,8 @@ quality:
 
 outcomes:
 	PYTHONPATH=src $(PYTHON) -c 'from pathlib import Path; from client_impact import generate_dataset, outcome_report, write_outcome_report; write_outcome_report(outcome_report(generate_dataset()), Path("results/generated/outcomes.json"))'
+
+uncertainty:
+	PYTHONPATH=src $(PYTHON) -c 'from pathlib import Path; from client_impact import generate_dataset, uncertainty_report, write_uncertainty_report; write_uncertainty_report(uncertainty_report(generate_dataset()), Path("results/generated/uncertainty.json"))'
 
 check: lint test
