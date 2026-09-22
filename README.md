@@ -26,8 +26,8 @@ The dashboard and analysis are for program learning and safeguards. They must no
 CI0 foundation, CI1 indicator/source specification, CI2 synthetic client-impact dataset
 generation and CI3 data-quality reporting are complete. CI4 descriptive outcome analytics,
 aggregate reporting, uncertainty intervals and follow-up coverage are now available. Next:
-CI5 responsible-lending and financial-health analytics are now available. Next: add client
-voice and complaint analysis.
+CI5 responsible-lending and financial-health analytics plus CI6 inclusion and client-voice
+analytics are now available. Next: strengthen subgroup uncertainty and evaluation design.
 
 ## Quick start
 
@@ -42,6 +42,8 @@ make quality  # write results/generated/data-quality.json
 make outcomes  # write results/generated/outcomes.json
 make uncertainty  # write results/generated/uncertainty.json
 make financial-health  # write results/generated/financial-health.json
+make inclusion  # write results/generated/inclusion.json
+make client-voice  # write results/generated/client-voice.json
 ```
 
 ## Repository standards

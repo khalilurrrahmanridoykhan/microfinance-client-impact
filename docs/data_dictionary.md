@@ -25,7 +25,7 @@ This contract defines the initial synthetic dataset. It contains no direct ident
 | agency_surveys | `women_loan_control_score` | number | Reported control over loan use, from 0 to 1 | Sensitive outcome |
 | agency_surveys | `women_income_control_score` | number | Reported control over income, from 0 to 1 | Sensitive outcome |
 | outcome_surveys | `business_operating` | boolean | Whether the financed business is operating | Outcome |
-| outcome_surveys | `satisfaction_score` | integer | Documented satisfaction scale | Survey response |
+| outcome_surveys | `satisfaction_score` | integer | Follow-up satisfaction response on a 1-to-5 scale | Survey response |
 | complaints | `complaint_category` | category | Standardized complaint type | Client voice |
 | complaints | `resolved_at` | date or null | Resolution date, if resolved | Client voice |
 | dropout_events | `exit_reason` | category | Standardized voluntary-exit reason | Client voice |
@@ -37,3 +37,4 @@ This contract defines the initial synthetic dataset. It contains no direct ident
 - Dates must use month or quarter precision unless a test specifically requires a day.
 - Generator validation must reject negative financial values, invalid score ranges and unknown categories.
 - Published outputs should aggregate these fields and suppress small groups.
+- Satisfaction scores are synthetic follow-up responses and do not represent a validated real-world survey instrument.
