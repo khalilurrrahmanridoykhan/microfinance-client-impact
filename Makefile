@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-.PHONY: setup test lint synth quality outcomes uncertainty financial-health inclusion client-voice evaluation check
+.PHONY: setup test lint synth quality outcomes uncertainty financial-health inclusion client-voice evaluation webdata check
 
 setup:
 	$(PYTHON) -m pip install -e '.[dev]'
@@ -34,5 +34,8 @@ client-voice:
 
 evaluation:
 	PYTHONPATH=src $(PYTHON) -c 'from pathlib import Path; from client_impact import evaluation_report, generate_dataset, write_evaluation_report; write_evaluation_report(evaluation_report(generate_dataset()), Path("results/generated/evaluation.json"))'
+
+webdata:
+	PYTHONPATH=src $(PYTHON) scripts/export_web_data.py
 
 check: lint test

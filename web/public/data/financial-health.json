@@ -1,0 +1,76 @@
+{
+  "assumptions": {
+    "high_total_debt_service_ratio": 0.4,
+    "multiple_lender_minimum": 2,
+    "other_debt_months": 12
+  },
+  "by_district": {
+    "Cumilla": {
+      "debt_replacement_rate": 0.2353,
+      "median_total_debt_service_ratio": 0.2338,
+      "multiple_borrowing_rate": 0.0,
+      "n": 17,
+      "support_review_flag_rate": 0.4118
+    },
+    "Dhaka": {
+      "debt_replacement_rate": 0.1579,
+      "median_total_debt_service_ratio": 0.241,
+      "multiple_borrowing_rate": 0.1579,
+      "n": 19,
+      "support_review_flag_rate": 0.4211
+    },
+    "Khulna": {
+      "debt_replacement_rate": 0.3077,
+      "median_total_debt_service_ratio": 0.2344,
+      "multiple_borrowing_rate": 0.3462,
+      "n": 26,
+      "support_review_flag_rate": 0.6923
+    },
+    "Rajshahi": {
+      "debt_replacement_rate": 0.2632,
+      "median_total_debt_service_ratio": 0.27,
+      "multiple_borrowing_rate": 0.3158,
+      "n": 19,
+      "support_review_flag_rate": 0.7368
+    },
+    "Sunamganj": {
+      "debt_replacement_rate": 0.1053,
+      "median_total_debt_service_ratio": 0.2013,
+      "multiple_borrowing_rate": 0.2105,
+      "n": 19,
+      "support_review_flag_rate": 0.3684
+    }
+  },
+  "by_gender": {
+    "man": {
+      "debt_replacement_rate": 0.1481,
+      "median_total_debt_service_ratio": 0.1821,
+      "multiple_borrowing_rate": 0.1852,
+      "n": 27,
+      "support_review_flag_rate": 0.3704
+    },
+    "nonbinary_or_other": {
+      "debt_replacement_rate": 0.2632,
+      "median_total_debt_service_ratio": 0.2495,
+      "multiple_borrowing_rate": 0.2105,
+      "n": 38,
+      "support_review_flag_rate": 0.6579
+    },
+    "woman": {
+      "debt_replacement_rate": 0.2286,
+      "median_total_debt_service_ratio": 0.27,
+      "multiple_borrowing_rate": 0.2571,
+      "n": 35,
+      "support_review_flag_rate": 0.5429
+    }
+  },
+  "data_layer": "synthetic",
+  "interpretation": "support signals for human review; not credit decisions",
+  "overall": {
+    "debt_replacement_rate": 0.22,
+    "median_total_debt_service_ratio": 0.238,
+    "multiple_borrowing_rate": 0.22,
+    "n": 100,
+    "support_review_flag_rate": 0.54
+  }
+}

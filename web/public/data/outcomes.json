@@ -1,0 +1,80 @@
+{
+  "by_district": {
+    "Cumilla": {
+      "business_survival_rate": 0.8824,
+      "essential_expense_reduction_rate": 0.1176,
+      "median_business_profit_change": 548.52,
+      "median_income_change": 3474.05,
+      "median_savings_change": 3091.23,
+      "n": 17
+    },
+    "Dhaka": {
+      "business_survival_rate": 0.9474,
+      "essential_expense_reduction_rate": 0.1053,
+      "median_business_profit_change": 360.9,
+      "median_income_change": 3823.39,
+      "median_savings_change": 1721.92,
+      "n": 19
+    },
+    "Khulna": {
+      "business_survival_rate": 0.9615,
+      "essential_expense_reduction_rate": 0.1538,
+      "median_business_profit_change": 121.79,
+      "median_income_change": 2291.88,
+      "median_savings_change": 4787.37,
+      "n": 26
+    },
+    "Rajshahi": {
+      "business_survival_rate": 0.9474,
+      "essential_expense_reduction_rate": 0.2105,
+      "median_business_profit_change": 873.54,
+      "median_income_change": 3400.73,
+      "median_savings_change": 1685.1,
+      "n": 19
+    },
+    "Sunamganj": {
+      "business_survival_rate": 0.7895,
+      "essential_expense_reduction_rate": 0.1579,
+      "median_business_profit_change": 1134.45,
+      "median_income_change": 3290.68,
+      "median_savings_change": 3639.94,
+      "n": 19
+    }
+  },
+  "by_gender": {
+    "man": {
+      "business_survival_rate": 0.8148,
+      "essential_expense_reduction_rate": 0.037,
+      "median_business_profit_change": 903.71,
+      "median_income_change": 3637.96,
+      "median_savings_change": 2857.46,
+      "n": 27
+    },
+    "nonbinary_or_other": {
+      "business_survival_rate": 1.0,
+      "essential_expense_reduction_rate": 0.1579,
+      "median_business_profit_change": 722.97,
+      "median_income_change": 2878.3,
+      "median_savings_change": 3082.45,
+      "n": 38
+    },
+    "woman": {
+      "business_survival_rate": 0.8857,
+      "essential_expense_reduction_rate": 0.2286,
+      "median_business_profit_change": 362.75,
+      "median_income_change": 1751.87,
+      "median_savings_change": 4092.79,
+      "n": 35
+    }
+  },
+  "data_layer": "synthetic",
+  "interpretation": "descriptive paired change; not automatically causal",
+  "overall": {
+    "business_survival_rate": 0.91,
+    "essential_expense_reduction_rate": 0.15,
+    "median_business_profit_change": 566.77,
+    "median_income_change": 2988.34,
+    "median_savings_change": 3082.45,
+    "n": 100
+  }
+}

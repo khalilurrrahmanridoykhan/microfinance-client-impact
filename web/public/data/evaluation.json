@@ -1,0 +1,23 @@
+{
+  "data_layer": "synthetic",
+  "descriptive_analysis": {
+    "causal_interpretation_allowed": false,
+    "estimand": "paired descriptive change",
+    "summary": {
+      "business_survival_rate": 0.91,
+      "essential_expense_reduction_rate": 0.15,
+      "median_business_profit_change": 566.77,
+      "median_income_change": 2988.34,
+      "median_savings_change": 3082.45,
+      "n": 100
+    }
+  },
+  "readiness": {
+    "causal_ready": false,
+    "evaluation_group_field": "evaluation_group",
+    "group_count": 0,
+    "reasons": [
+      "clients table has no non-null evaluation_group field"
+    ]
+  }
+}

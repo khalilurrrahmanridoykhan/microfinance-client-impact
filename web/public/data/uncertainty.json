@@ -1,0 +1,59 @@
+{
+  "coverage": {
+    "outcome_surveys": {
+      "baseline_n": 100,
+      "followup_n": 100,
+      "followup_rate": 1.0,
+      "paired_n": 100,
+      "paired_rate": 1.0,
+      "table": "outcome_surveys"
+    },
+    "savings": {
+      "baseline_n": 100,
+      "followup_n": 100,
+      "followup_rate": 1.0,
+      "paired_n": 100,
+      "paired_rate": 1.0,
+      "table": "savings"
+    },
+    "wellbeing_surveys": {
+      "baseline_n": 100,
+      "followup_n": 100,
+      "followup_rate": 1.0,
+      "paired_n": 100,
+      "paired_rate": 1.0,
+      "table": "wellbeing_surveys"
+    }
+  },
+  "data_layer": "synthetic",
+  "interpretation": "bootstrap intervals describe synthetic paired changes; not causal evidence",
+  "median_change_intervals": {
+    "business_profit": {
+      "confidence": 0.95,
+      "estimate": 566.77,
+      "lower": 226.47,
+      "n": 100,
+      "resamples": 2000,
+      "seed": 20260922,
+      "upper": 1153.57
+    },
+    "income": {
+      "confidence": 0.95,
+      "estimate": 2988.34,
+      "lower": 2019.28,
+      "n": 100,
+      "resamples": 2000,
+      "seed": 20260922,
+      "upper": 4069.4
+    },
+    "savings": {
+      "confidence": 0.95,
+      "estimate": 3082.45,
+      "lower": 2320.37,
+      "n": 100,
+      "resamples": 2000,
+      "seed": 20260922,
+      "upper": 4074.85
+    }
+  }
+}

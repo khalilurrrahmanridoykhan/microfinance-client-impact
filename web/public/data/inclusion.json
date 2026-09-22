@@ -1,0 +1,43 @@
+{
+  "by_district": {
+    "Cumilla": {
+      "mean_income_control_score": 0.44,
+      "mean_loan_control_score": 0.6417,
+      "n": 6,
+      "suppressed": false
+    },
+    "Dhaka": {
+      "mean_income_control_score": 0.3786,
+      "mean_loan_control_score": 0.59,
+      "n": 7,
+      "suppressed": false
+    },
+    "Khulna": {
+      "mean_income_control_score": 0.4786,
+      "mean_loan_control_score": 0.7,
+      "n": 7,
+      "suppressed": false
+    },
+    "Rajshahi": {
+      "mean_income_control_score": 0.4014,
+      "mean_loan_control_score": 0.7571,
+      "n": 7,
+      "suppressed": false
+    },
+    "Sunamganj": {
+      "mean_income_control_score": 0.44,
+      "mean_loan_control_score": 0.6288,
+      "n": 8,
+      "suppressed": false
+    }
+  },
+  "data_layer": "synthetic",
+  "interpretation": "reported agency differences; not automatically causal",
+  "minimum_group_size": 5,
+  "overall": {
+    "mean_income_control_score": 0.4277,
+    "mean_loan_control_score": 0.6631,
+    "n": 35,
+    "suppressed": false
+  }
+}

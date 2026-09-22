@@ -1,0 +1,23 @@
+{
+  "active_clients": 100,
+  "complaint_n": 16,
+  "complaint_rate_per_1000": 160.0,
+  "complaint_resolution_rate": 0.875,
+  "complaints_by_category": {
+    "pricing": 2,
+    "schedule": 4,
+    "service": 4,
+    "treatment": 6
+  },
+  "exits_by_reason": {
+    "completed": 1,
+    "dissatisfied": 3,
+    "income_shock": 1,
+    "moved": 4
+  },
+  "mean_satisfaction_score": 2.88,
+  "median_resolution_days": 7.5,
+  "satisfaction_response_n": 100,
+  "voluntary_exit_n": 9,
+  "voluntary_exit_rate": 0.09
+}
