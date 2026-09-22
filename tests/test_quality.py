@@ -1,5 +1,5 @@
 from client_impact.generate import SyntheticConfig, generate_dataset
-from client_impact.quality import quality_report
+from client_impact.quality import quality_report, write_quality_report
 
 
 def test_generated_dataset_has_no_quality_errors():
@@ -29,3 +29,12 @@ def test_quality_report_allows_declared_optional_agency_scores():
     report = quality_report(tables)
 
     assert report["ok"] is True
+
+
+def test_quality_report_can_be_written_as_json(tmp_path):
+    report = quality_report(generate_dataset(SyntheticConfig(seed=7, clients=2)))
+    output_path = tmp_path / "data-quality.json"
+
+    write_quality_report(report, output_path)
+
+    assert '"ok": true' in output_path.read_text(encoding="utf-8")

@@ -2,7 +2,7 @@
 
 from .generate import SyntheticConfig, generate_dataset, validate_dataset, write_dataset
 from .indicators import debt_service_ratio, income_change
-from .quality import quality_report
+from .quality import quality_report, write_quality_report
 
 __all__ = [
 	"SyntheticConfig",
@@ -10,6 +10,7 @@ __all__ = [
 	"generate_dataset",
 	"income_change",
 	"quality_report",
+	"write_quality_report",
 	"validate_dataset",
 	"write_dataset",
 ]

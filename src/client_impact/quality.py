@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 from .generate import TABLE_NAMES
@@ -58,3 +60,9 @@ def quality_report(tables: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
         "errors": errors,
         "warnings": warnings,
     }
+
+
+def write_quality_report(report: dict[str, Any], output_path: Path) -> None:
+    """Write a quality report as stable, human-readable JSON."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
