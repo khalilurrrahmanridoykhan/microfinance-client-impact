@@ -397,8 +397,13 @@ tbody th {
     border-radius: 50%;
 }
 
-.status-warn { background: #b35438; }
-.status-ok { background: #4c8469; }
+.status-warn {
+    background: #b35438;
+}
+
+.status-ok {
+    background: #4c8469;
+}
 
 .method-list {
     display: block;
