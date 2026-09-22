@@ -1,5 +1,6 @@
 """Client impact and responsible-lending analytics."""
 
+from .client_voice import client_voice_summary, write_client_voice_report
 from .financial_health import (
 	FinancialHealthConfig,
 	financial_health_report,
@@ -29,6 +30,7 @@ from .uncertainty import (
 __all__ = [
 	"SyntheticConfig",
 	"FinancialHealthConfig",
+	"client_voice_summary",
 	"debt_service_ratio",
 	"generate_dataset",
 	"income_change",
@@ -49,6 +51,7 @@ __all__ = [
 	"subgroup_summary",
 	"support_review_flags",
 	"write_financial_health_report",
+	"write_client_voice_report",
 	"write_outcome_report",
 	"write_quality_report",
 	"validate_dataset",
