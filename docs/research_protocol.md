@@ -2,7 +2,9 @@
 
 ## Current stage
 
-CI0 foundation. The first analysis will use synthetic data and will be descriptive.
+CI7 evaluation-readiness diagnostics. The current synthetic population has paired borrower
+observations but no treatment, comparison or not-yet-borrowed group, so results remain
+descriptive and are not causal impact estimates.
 
 ## Questions
 
@@ -18,3 +20,11 @@ Use `associated with`, `reported change` and `observed difference` unless a defe
 ## Prohibited use
 
 Indicators and support flags must not automatically approve, reject or price a loan. The project is for program learning, safeguards and responsible-lending review.
+
+## Requirements before causal analysis
+
+Before using difference-in-differences, matched comparisons or another causal design, the
+data must include a defensible comparison group, clearly defined treatment timing, repeated
+outcome measurements, measured baseline covariates, documented attrition and a pre-specified
+analysis plan. Balance, placebo and sensitivity diagnostics must pass before causal language
+is used.
