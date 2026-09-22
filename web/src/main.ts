@@ -1,12 +1,49 @@
 import "./styles.css";
 
 type ReportBundle = {
-    outcomes: { overall: { n: number; median_income_change: number; median_savings_change: number } };
-    financialHealth: { overall: { support_review_flag_rate: number; multiple_borrowing_rate: number } };
-    clientVoice: { satisfaction_response_n: number; mean_satisfaction_score: number; complaint_rate_per_1000: number };
+  outcomes: {
+    overall: OutcomeGroup;
+    by_gender: Record<string, OutcomeGroup>;
+    by_district: Record<string, OutcomeGroup>;
+  };
+  financialHealth: {
+    overall: FinancialGroup;
+    by_gender: Record<string, FinancialGroup>;
+    by_district: Record<string, FinancialGroup>;
+  };
+  clientVoice: {
+    active_clients: number;
+    satisfaction_response_n: number;
+    mean_satisfaction_score: number;
+    complaint_n: number;
+    complaint_rate_per_1000: number;
+    complaint_resolution_rate: number;
+    median_resolution_days: number;
+    voluntary_exit_n: number;
+    voluntary_exit_rate: number;
+    complaints_by_category: Record<string, number>;
+    exits_by_reason: Record<string, number>;
+  };
     inclusion: { overall: { n: number; suppressed: boolean; mean_loan_control_score?: number } };
     uncertainty: { median_change_intervals: { income: { lower: number; upper: number } } };
     evaluation: { readiness: { causal_ready: boolean; reasons: string[] } };
+};
+
+type OutcomeGroup = {
+  n: number;
+  median_income_change: number;
+  median_savings_change: number;
+  median_business_profit_change: number;
+  business_survival_rate: number;
+  essential_expense_reduction_rate: number;
+};
+
+type FinancialGroup = {
+  n: number;
+  median_total_debt_service_ratio: number;
+  multiple_borrowing_rate: number;
+  debt_replacement_rate: number;
+  support_review_flag_rate: number;
 };
 
 type DashboardView = "Overview" | "Financial health" | "Inclusion & voice" | "Methods";
@@ -71,38 +108,63 @@ async function loadReports(): Promise<ReportBundle> {
 function renderView(view: DashboardView, reports?: ReportBundle): void {
     const panel = document.querySelector<HTMLElement>("#view-panel");
     if (!panel) return;
-  const views: Record<DashboardView, string> = {
-    Overview: reports
-      ? `<p class="eyebrow">Overview</p><h3>Reported change, held beside financial stress</h3><p>Median household income change: <strong>${reports.outcomes.overall.median_income_change}</strong>. Median savings change: <strong>${reports.outcomes.overall.median_savings_change}</strong>.</p>`
-      : `<p class="eyebrow">Overview</p><h3>Aggregate reports are loading</h3><p class="muted">The dashboard is ready. Its synthetic report bundle will appear here when available.</p>`,
-    "Financial health": reports
-      ? `<p class="eyebrow">Financial health</p><h3>Support signals need human context</h3><p><strong>${Math.round(reports.financialHealth.overall.support_review_flag_rate * 100)}%</strong> of synthetic clients meet at least one configured support signal. Multiple borrowing appears for <strong>${Math.round(reports.financialHealth.overall.multiple_borrowing_rate * 100)}%</strong>.</p>`
-      : `<p class="eyebrow">Financial health</p><h3>Financial-health report unavailable</h3><p class="muted">Run <code>make webdata</code> to provide the aggregate report.</p>`,
-    "Inclusion & voice": reports
-      ? `<p class="eyebrow">Inclusion & voice</p><h3>Agency and experience are reported together</h3><p>Satisfaction mean: <strong>${reports.clientVoice.mean_satisfaction_score}</strong>/5. Complaints: <strong>${reports.clientVoice.complaint_rate_per_1000}</strong> per 1,000 active synthetic clients.</p>`
-      : `<p class="eyebrow">Inclusion & voice</p><h3>Client-voice report unavailable</h3><p class="muted">Run <code>make webdata</code> to provide the aggregate report.</p>`,
-    Methods: reports
-      ? `<p class="eyebrow">Methods</p><h3>What this dashboard can and cannot say</h3><p>Income-change interval: <strong>${reports.uncertainty.median_change_intervals.income.lower}</strong> to <strong>${reports.uncertainty.median_change_intervals.income.upper}</strong>. Causal-ready: <strong>${reports.evaluation.readiness.causal_ready ? "yes" : "no"}</strong>.</p><p class="muted">This release has no comparison group. Results are synthetic, descriptive and not credit decisions.</p>`
-      : `<p class="eyebrow">Methods</p><h3>Methods and limits</h3><p class="muted">This dashboard uses synthetic, aggregate data only. Run <code>make webdata</code> to load the current report metadata.</p>`,
+    const views: Record<DashboardView, string> = {
+      Overview: reports
+        ? `<div class="section-heading"><p class="eyebrow">Overview</p><h3>Read the client story in three layers</h3><p>Outcome change shows what moved between two synthetic observations. Financial health shows where repayment pressure may need human attention. Client voice shows satisfaction, complaints and exit signals.</p></div><div class="detail-grid"><article class="detail-card"><span class="card-kicker">Economic outcome</span><strong>${money(reports.outcomes.overall.median_income_change)}</strong><h4>Median income change</h4><p>Half of paired synthetic clients are at or below this reported change; half are above it.</p></article><article class="detail-card"><span class="card-kicker">Resilience</span><strong>${money(reports.outcomes.overall.median_savings_change)}</strong><h4>Median savings change</h4><p>This is change in the generated savings balance, not total household wealth.</p></article><article class="detail-card"><span class="card-kicker">Business continuity</span><strong>${percent(reports.outcomes.overall.business_survival_rate)}</strong><h4>Business survival</h4><p>Share with an operating business at follow-up among the paired observations.</p></article></div><div class="comparison-block"><div><p class="eyebrow">What to notice</p><h4>Positive movement is not proof of impact</h4><p>These are paired descriptive changes in generated records. They show how the analytical workflow works, not what real borrowers experienced.</p></div><div class="signal-list"><span><b>${reports.outcomes.overall.n}</b> paired clients</span><span><b>${percent(reports.outcomes.overall.essential_expense_reduction_rate)}</b> reported essential-spending reduction</span><span><b>${percent(reports.financialHealth.overall.support_review_flag_rate)}</b> met a support-review signal</span></div></div>`
+        : loadingPanel("Overview"),
+      "Financial health": reports
+        ? `<div class="section-heading"><p class="eyebrow">Financial health</p><h3>Signals for support, never automatic decisions</h3><p>A support signal means the synthetic record may deserve a conversation, affordability review or hardship support. It does not mean a borrower is unsafe or should be rejected.</p></div><div class="detail-grid"><article class="detail-card"><span class="card-kicker">Support signal</span><strong>${percent(reports.financialHealth.overall.support_review_flag_rate)}</strong><h4>Flagged for human review</h4><p>At least one configured signal: high total debt-service ratio, multiple borrowing or debt-replacement purpose.</p></article><article class="detail-card"><span class="card-kicker">Debt burden</span><strong>${percent(reports.financialHealth.overall.median_total_debt_service_ratio)}</strong><h4>Median total debt-service ratio</h4><p>Estimated monthly debt payments divided by monthly household income.</p></article><article class="detail-card"><span class="card-kicker">Lender overlap</span><strong>${percent(reports.financialHealth.overall.multiple_borrowing_rate)}</strong><h4>Multiple borrowing</h4><p>Share reporting at least two other lenders in the synthetic ledger.</p></article></div>${financialTable(reports.financialHealth.by_district)}<p class="table-note">Other debt payments are estimated by dividing outstanding debt by 12 months. This is a modelling assumption, not a regulatory threshold.</p>`
+        : loadingPanel("Financial health"),
+      "Inclusion & voice": reports
+        ? `<div class="section-heading"><p class="eyebrow">Inclusion & voice</p><h3>Measure agency and service experience together</h3><p>A borrower count alone cannot show who controls the loan or whether clients feel heard. These synthetic indicators combine reported agency, satisfaction, complaints and exits.</p></div><div class="detail-grid"><article class="detail-card"><span class="card-kicker">Agency</span><strong>${reports.inclusion.overall.suppressed ? "Hidden" : score(reports.inclusion.overall.mean_loan_control_score)}</strong><h4>Loan-use control</h4><p>Average reported control score among women in the synthetic follow-up survey.</p></article><article class="detail-card"><span class="card-kicker">Experience</span><strong>${score(reports.clientVoice.mean_satisfaction_score)}/5</strong><h4>Mean satisfaction</h4><p>${reports.clientVoice.satisfaction_response_n} synthetic follow-up responses were available.</p></article><article class="detail-card"><span class="card-kicker">Client voice</span><strong>${reports.clientVoice.complaint_n}</strong><h4>Complaints recorded</h4><p>${reports.clientVoice.complaint_resolution_rate * 100}% were marked resolved in the synthetic records.</p></article></div><div class="voice-columns"><div><h4>Complaint categories</h4>${countList(reports.clientVoice.complaints_by_category)}</div><div><h4>Voluntary exit reasons</h4>${countList(reports.clientVoice.exits_by_reason)}</div></div>`
+        : loadingPanel("Inclusion & voice"),
+      Methods: reports
+        ? `<div class="section-heading"><p class="eyebrow">Methods & limits</p><h3>Evidence before interpretation</h3><p>This dashboard is designed to make uncertainty visible. It does not turn synthetic records into evidence about real borrowers.</p></div><div class="method-grid"><article class="method-card"><span class="status-dot status-warn"></span><h4>Data layer</h4><p><strong>Synthetic</strong><br />Generated from a fixed seed and documented assumptions. No real client records are used.</p></article><article class="method-card"><span class="status-dot status-warn"></span><h4>Causal readiness</h4><p><strong>${reports.evaluation.readiness.causal_ready ? "Ready for further review" : "Not causal-ready"}</strong><br />There is no comparison group in this release.</p></article><article class="method-card"><span class="status-dot status-ok"></span><h4>Income interval</h4><p><strong>${money(reports.uncertainty.median_change_intervals.income.lower)} to ${money(reports.uncertainty.median_change_intervals.income.upper)}</strong><br />Reproducible bootstrap interval for the synthetic median change.</p></article></div><div class="method-list"><h4>Use this dashboard to</h4><ul><li>understand indicator definitions and data relationships;</li><li>compare synthetic segments as an analytical exercise; and</li><li>identify questions that require real, ethically collected evaluation data.</li></ul><h4>Do not use it to</h4><ul><li>approve, reject or price an individual loan;</li><li>claim that borrowing caused an observed change; or</li><li>describe Bangladesh's real microfinance clients.</li></ul></div>`
+        : loadingPanel("Methods"),
     };
-  panel.innerHTML = views[view];
+    panel.innerHTML = views[view];
 }
+
+  function money(value: number): string {
+    return `${value >= 0 ? "+" : ""}${Math.round(value).toLocaleString()} BDT`;
+  }
+
+  function percent(value: number): string {
+    return `${Math.round(value * 100)}%`;
+  }
+
+  function score(value?: number): string {
+    return value === undefined ? "Hidden" : value.toFixed(2);
+  }
+
+  function loadingPanel(title: string): string {
+    return `<div class="section-heading"><p class="eyebrow">${title}</p><h3>Aggregate reports are loading</h3><p class="muted">The dashboard is ready. Its synthetic report bundle will appear here when available.</p></div>`;
+  }
+
+  function financialTable(groups: Record<string, FinancialGroup>): string {
+    const rows = Object.entries(groups).map(([name, group]) => `<tr><th scope="row">${name}</th><td>${group.n}</td><td>${percent(group.median_total_debt_service_ratio)}</td><td>${percent(group.multiple_borrowing_rate)}</td><td>${percent(group.support_review_flag_rate)}</td></tr>`).join("");
+    return `<div class="table-wrap"><div class="table-heading"><div><p class="eyebrow">District comparison</p><h4>Where support signals are concentrated</h4></div><span>n = paired records</span></div><table><thead><tr><th scope="col">District</th><th scope="col">Clients</th><th scope="col">Median debt burden</th><th scope="col">Multiple borrowing</th><th scope="col">Support signal</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function countList(values: Record<string, number>): string {
+    return `<ul class="count-list">${Object.entries(values).map(([name, count]) => `<li><span>${name.replaceAll("_", " ")}</span><b>${count}</b></li>`).join("")}</ul>`;
+  }
 
 let loadedReports: ReportBundle | undefined;
 
 for (const tab of root.querySelectorAll<HTMLButtonElement>(".tab")) {
-  tab.addEventListener("click", () => {
-    for (const item of root.querySelectorAll<HTMLButtonElement>(".tab")) {
-      const isActive = item === tab;
-      item.classList.toggle("is-active", isActive);
-      item.toggleAttribute("aria-current", isActive);
-    }
-    renderView(tab.dataset.view as DashboardView, loadedReports);
-    document.querySelector<HTMLElement>("#view-panel")?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
+    tab.addEventListener("click", () => {
+        for (const item of root.querySelectorAll<HTMLButtonElement>(".tab")) {
+            const isActive = item === tab;
+            item.classList.toggle("is-active", isActive);
+            item.toggleAttribute("aria-current", isActive);
+        }
+        renderView(tab.dataset.view as DashboardView, loadedReports);
+        document.querySelector<HTMLElement>("#view-panel")?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+        });
     });
-  });
 }
 
 renderView("Overview");
