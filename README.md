@@ -35,6 +35,7 @@ make setup
 make test
 make lint
 make synth  # write the seeded synthetic tables to data/synthetic/
+make quality  # write results/generated/data-quality.json
 ```
 
 ## Repository standards
