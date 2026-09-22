@@ -9,6 +9,7 @@ from .financial_health import (
 	write_financial_health_report,
 )
 from .generate import SyntheticConfig, generate_dataset, validate_dataset, write_dataset
+from .inclusion import inclusion_by_district, inclusion_rows, inclusion_summary
 from .indicators import debt_service_ratio, income_change
 from .outcomes import (
 	client_outcomes,
@@ -31,6 +32,9 @@ __all__ = [
 	"debt_service_ratio",
 	"generate_dataset",
 	"income_change",
+	"inclusion_by_district",
+	"inclusion_rows",
+	"inclusion_summary",
 	"client_outcomes",
 	"bootstrap_median_interval",
 	"followup_coverage",
