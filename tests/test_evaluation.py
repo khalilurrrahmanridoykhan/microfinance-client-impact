@@ -1,4 +1,9 @@
-from client_impact.evaluation import descriptive_evaluation_summary, evaluation_readiness
+from client_impact.evaluation import (
+    descriptive_evaluation_summary,
+    evaluation_readiness,
+    evaluation_report,
+    write_evaluation_report,
+)
 from client_impact.generate import SyntheticConfig, generate_dataset
 
 
@@ -27,3 +32,15 @@ def test_descriptive_summary_disallows_causal_interpretation():
     assert summary["estimand"] == "paired descriptive change"
     assert summary["causal_interpretation_allowed"] is False
     assert summary["summary"]["n"] == 4
+
+
+def test_evaluation_report_is_aggregate_and_exportable(tmp_path):
+    report = evaluation_report(generate_dataset(SyntheticConfig(seed=7, clients=4)))
+    output_path = tmp_path / "evaluation.json"
+
+    write_evaluation_report(report, output_path)
+
+    assert report["data_layer"] == "synthetic"
+    assert report["readiness"]["causal_ready"] is False
+    assert "client_id" not in report
+    assert '"data_layer": "synthetic"' in output_path.read_text(encoding="utf-8")

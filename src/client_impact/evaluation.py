@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 from .outcomes import client_outcomes, outcome_summary
@@ -42,3 +44,18 @@ def descriptive_evaluation_summary(tables: dict[str, list[dict[str, Any]]]) -> d
         "causal_interpretation_allowed": False,
         "summary": outcome_summary(client_outcomes(tables)),
     }
+
+
+def evaluation_report(tables: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    """Build an aggregate evaluation-design and descriptive-outcome report."""
+    return {
+        "data_layer": "synthetic",
+        "readiness": evaluation_readiness(tables),
+        "descriptive_analysis": descriptive_evaluation_summary(tables),
+    }
+
+
+def write_evaluation_report(report: dict[str, Any], output_path: Path) -> None:
+    """Write the evaluation report as stable, human-readable JSON."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

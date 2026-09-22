@@ -1,7 +1,12 @@
 """Client impact and responsible-lending analytics."""
 
 from .client_voice import client_voice_summary, write_client_voice_report
-from .evaluation import descriptive_evaluation_summary, evaluation_readiness
+from .evaluation import (
+	descriptive_evaluation_summary,
+	evaluation_readiness,
+	evaluation_report,
+	write_evaluation_report,
+)
 from .financial_health import (
 	FinancialHealthConfig,
 	financial_health_report,
@@ -40,6 +45,7 @@ __all__ = [
 	"client_voice_summary",
 	"descriptive_evaluation_summary",
 	"evaluation_readiness",
+	"evaluation_report",
 	"debt_service_ratio",
 	"generate_dataset",
 	"income_change",
@@ -63,6 +69,7 @@ __all__ = [
 	"write_financial_health_report",
 	"write_inclusion_report",
 	"write_client_voice_report",
+	"write_evaluation_report",
 	"write_outcome_report",
 	"write_quality_report",
 	"validate_dataset",
