@@ -1,6 +1,13 @@
 """Client impact and responsible-lending analytics."""
 
-from .financial_health import FinancialHealthConfig, financial_health_rows, support_review_flags
+from .financial_health import (
+	FinancialHealthConfig,
+	financial_health_report,
+	financial_health_rows,
+	financial_health_summary,
+	support_review_flags,
+	write_financial_health_report,
+)
 from .generate import SyntheticConfig, generate_dataset, validate_dataset, write_dataset
 from .indicators import debt_service_ratio, income_change
 from .outcomes import (
@@ -28,6 +35,8 @@ __all__ = [
 	"bootstrap_median_interval",
 	"followup_coverage",
 	"financial_health_rows",
+	"financial_health_report",
+	"financial_health_summary",
 	"uncertainty_report",
 	"write_uncertainty_report",
 	"outcome_summary",
@@ -35,6 +44,7 @@ __all__ = [
 	"quality_report",
 	"subgroup_summary",
 	"support_review_flags",
+	"write_financial_health_report",
 	"write_outcome_report",
 	"write_quality_report",
 	"validate_dataset",

@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
+from pathlib import Path
+from statistics import median
 from typing import Any
 
 from .indicators import debt_service_ratio
@@ -87,5 +90,63 @@ def support_review_flags(
     return flags
 
 
+def financial_health_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Summarize financial-health rows for a population or subgroup."""
+    if not rows:
+        return {"n": 0}
+    return {
+        "n": len(rows),
+        "median_total_debt_service_ratio": round(
+            median(row["total_debt_service_ratio"] for row in rows), 4
+        ),
+        "multiple_borrowing_rate": round(
+            sum(row["multiple_borrowing"] for row in rows) / len(rows), 4
+        ),
+        "debt_replacement_rate": round(
+            sum(row["debt_replacement_purpose"] for row in rows) / len(rows), 4
+        ),
+        "support_review_flag_rate": round(
+            sum(row["support_review_flagged"] for row in rows) / len(rows), 4
+        ),
+    }
+
+
+def financial_health_report(
+    tables: dict[str, list[dict[str, Any]]],
+    config: FinancialHealthConfig = FinancialHealthConfig(),
+) -> dict[str, Any]:
+    """Build aggregate financial-health results without exposing client records."""
+    rows = financial_health_rows(tables, config)
+    return {
+        "data_layer": "synthetic",
+        "interpretation": "support signals for human review; not credit decisions",
+        "assumptions": {
+            "high_total_debt_service_ratio": config.high_total_debt_service_ratio,
+            "multiple_lender_minimum": config.multiple_lender_minimum,
+            "other_debt_months": config.other_debt_months,
+        },
+        "overall": financial_health_summary(rows),
+        "by_gender": _subgroup_financial_summary(rows, "gender"),
+        "by_district": _subgroup_financial_summary(rows, "district"),
+    }
+
+
+def write_financial_health_report(report: dict[str, Any], output_path: Path) -> None:
+    """Write aggregate financial-health results as stable JSON."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def _rounded_ratio(value: float | None) -> float | None:
     return round(value, 4) if value is not None else None
+
+
+def _subgroup_financial_summary(
+    rows: list[dict[str, Any]], field: str
+) -> dict[str, dict[str, Any]]:
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        value = row.get(field)
+        if value is not None:
+            groups.setdefault(str(value), []).append(row)
+    return {value: financial_health_summary(group) for value, group in sorted(groups.items())}

@@ -1,4 +1,12 @@
-from client_impact.financial_health import FinancialHealthConfig, financial_health_rows, support_review_flags
+from client_impact.financial_health import (
+    FinancialHealthConfig,
+    financial_health_report,
+    financial_health_rows,
+    financial_health_summary,
+    support_review_flags,
+    write_financial_health_report,
+)
+from client_impact.generate import SyntheticConfig, generate_dataset
 
 
 def _tables():
@@ -45,3 +53,25 @@ def test_zero_income_does_not_create_ratio_flag():
     )
 
     assert flags == []
+
+
+def test_financial_health_summary_calculates_flag_rates():
+    rows = financial_health_rows(_tables())
+
+    summary = financial_health_summary(rows)
+
+    assert summary["n"] == 1
+    assert summary["multiple_borrowing_rate"] == 1.0
+    assert summary["support_review_flag_rate"] == 1.0
+
+
+def test_financial_health_report_is_aggregate_only(tmp_path):
+    report = financial_health_report(generate_dataset(SyntheticConfig(seed=7, clients=4)))
+    output_path = tmp_path / "financial-health.json"
+
+    write_financial_health_report(report, output_path)
+
+    assert report["data_layer"] == "synthetic"
+    assert report["overall"]["n"] == 4
+    assert "client_id" not in report
+    assert '"data_layer": "synthetic"' in output_path.read_text(encoding="utf-8")
