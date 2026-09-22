@@ -10,6 +10,7 @@ from .outcomes import (
 	write_outcome_report,
 )
 from .quality import quality_report, write_quality_report
+from .uncertainty import bootstrap_median_interval, followup_coverage
 
 __all__ = [
 	"SyntheticConfig",
@@ -17,6 +18,8 @@ __all__ = [
 	"generate_dataset",
 	"income_change",
 	"client_outcomes",
+	"bootstrap_median_interval",
+	"followup_coverage",
 	"outcome_summary",
 	"outcome_report",
 	"quality_report",
