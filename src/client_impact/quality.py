@@ -50,6 +50,11 @@ def quality_report(tables: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
             if value is not None and not 0 <= value <= 1:
                 errors.append(f"agency_surveys row {row_number} has invalid {field}")
 
+    for row_number, row in enumerate(tables.get("outcome_surveys", []), start=1):
+        score = row.get("satisfaction_score")
+        if score is not None and not 1 <= score <= 5:
+            errors.append(f"outcome_surveys row {row_number} has invalid satisfaction_score")
+
     if not client_rows:
         warnings.append("clients table is empty")
     return {

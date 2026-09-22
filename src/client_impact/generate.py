@@ -150,6 +150,7 @@ def generate_dataset(config: SyntheticConfig = SyntheticConfig()) -> dict[str, l
                     "monthly_business_revenue": followup_revenue,
                     "monthly_business_profit": followup_profit,
                     "business_operating": business_operating,
+                    "satisfaction_score": rng.randint(1, 5),
                 },
             ]
         )

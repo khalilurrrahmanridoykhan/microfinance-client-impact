@@ -12,6 +12,11 @@ def test_generation_creates_expected_links_and_rounds():
     assert len(tables["outcome_surveys"]) == 8
     assert {row["survey_round"] for row in tables["savings"]} == {"baseline", "followup"}
     assert all(row["client_id"].startswith("C") for row in tables["loans"])
+    assert all(
+        1 <= row["satisfaction_score"] <= 5
+        for row in tables["outcome_surveys"]
+        if row["survey_round"] == "followup"
+    )
 
 
 def test_validation_rejects_unknown_client():
