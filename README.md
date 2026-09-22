@@ -23,7 +23,8 @@ The dashboard and analysis are for program learning and safeguards. They must no
 
 ## Status
 
-CI0 foundation started. Next: finalize the research protocol, indicator catalogue and synthetic data generator.
+CI0 foundation and CI1 indicator/source specification are complete. CI2 synthetic client-impact
+dataset generation is now available. Next: add broader data-quality validation and reporting.
 
 ## Quick start
 
@@ -33,6 +34,7 @@ Requires Python 3.11 or newer.
 make setup
 make test
 make lint
+make synth  # write the seeded synthetic tables to data/synthetic/
 ```
 
 ## Repository standards
