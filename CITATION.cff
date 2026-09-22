@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+title: "Microfinance Client Impact and Responsible Lending Analytics"
+type: software
+authors:
+  - family-names: Khan
+    given-names: "Khalilur Rahman Ridoy"
+    orcid: ""
+repository-code: "https://github.com/khalilurrrahmanridoykhan/microfinance-client-impact"
+license: Apache-2.0
