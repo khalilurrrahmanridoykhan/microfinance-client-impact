@@ -27,9 +27,9 @@ CI0 foundation, CI1 indicator/source specification, CI2 synthetic client-impact 
 generation and CI3 data-quality reporting are complete. CI4 descriptive outcome analytics,
 aggregate reporting, uncertainty intervals and follow-up coverage are now available. Next:
 CI5 responsible-lending and financial-health analytics plus CI6 inclusion and client-voice
-analytics are now available. CI7 evaluation-readiness diagnostics are available; the current
-synthetic data is intentionally not causal-ready. Next: strengthen subgroup uncertainty and
-evaluation design only if a defensible comparison group is added.
+analytics are now available. CI7 evaluation-readiness diagnostics and the CI8 aggregate
+dashboard are available; the current synthetic data is intentionally not causal-ready.
+Next: strengthen dashboard accessibility and dependency maintenance.
 
 ## Quick start
 
@@ -47,6 +47,12 @@ make financial-health  # write results/generated/financial-health.json
 make inclusion  # write results/generated/inclusion.json
 make client-voice  # write results/generated/client-voice.json
 make evaluation  # write results/generated/evaluation.json
+make webdata  # regenerate aggregate JSON consumed by the dashboard
+
+cd web
+npm install
+npm test
+npm run build
 ```
 
 ## Repository standards
